@@ -9,7 +9,7 @@
         :root {
             --primary: #2c3e50; --secondary: #34495e; --accent: #27ae60;
             --warning: #f39c12; --danger: #c0392b; --info: #2980b9;
-            --bg: #ecf0f1; --card-bg: #ffffff;
+            --purple: #8e44ad; --bg: #ecf0f1; --card-bg: #ffffff;
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--primary); margin: 0; padding: 20px; }
         .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 20px auto; }
@@ -17,22 +17,34 @@
         .container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
         @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
         .card { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .filter-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .acc-group h4 { margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid var(--accent); }
-        .acc-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #ccc; }
+        .acc-item { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px dashed #ccc; }
+        .acc-top { display: flex; justify-content: space-between; width: 100%; }
         .acc-item span.balance { font-weight: bold; }
+        
+        /* Budget Progress Bar Styles */
+        .budget-bar-container { width: 100%; background-color: #e0e0e0; border-radius: 4px; height: 8px; margin-top: 5px; overflow: hidden; }
+        .budget-bar-fill { height: 100%; transition: width 0.3s; }
+        .budget-stats { display: flex; justify-content: space-between; font-size: 0.75em; color: #7f8c8d; margin-top: 2px; }
+
         .ai-analysis-box { background-color: #e8f4f8; border-left: 4px solid var(--info); padding: 15px; margin-top: 15px; font-size: 0.95em; line-height: 1.5; border-radius: 0 4px 4px 0; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
         input, select, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
         .btn-primary { background-color: var(--accent); color: white; border: none; cursor: pointer; font-weight: bold;}
         .btn-primary:hover { background-color: #219653; }
         .btn-secondary { background-color: var(--secondary); color: white; border: none; cursor: pointer; }
         .btn-info { background-color: var(--info); color: white; border: none; cursor: pointer; font-weight: bold; }
+        .btn-purple { background-color: var(--purple); color: white; border: none; cursor: pointer; font-weight: bold; }
+        
         .action-btn { padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; color: white; font-size: 0.8em; margin-right: 5px;}
         .btn-edit { background-color: var(--warning); }
         .btn-delete { background-color: var(--danger); }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: var(--secondary); color: white; }
@@ -40,18 +52,12 @@
         .edit-icon { cursor: pointer; font-size: 0.7em; color: var(--info); margin-left: 10px; opacity: 0.6; transition: opacity 0.3s; }
         .edit-icon:hover { opacity: 1; }
 
-        /* --- REGISTRATION GATEWAY STYLES --- */
-        #registrationGate {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(44, 62, 80, 0.95); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .gate-card {
-            background: white; padding: 40px; border-radius: 8px; width: 100%; max-width: 400px;
-            text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+        /* Gate Styles */
+        #registrationGate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(44, 62, 80, 0.95); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .gate-card { background: white; padding: 40px; border-radius: 8px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .gate-card h2 { color: var(--accent); margin-top: 0; }
 
+        /* Print Styles */
         .print-footer, .print-only-title { display: none; }
         @media print {
             body { background-color: white; padding: 0; }
@@ -74,7 +80,7 @@
     <div id="registrationGate">
         <div class="gate-card">
             <h2>Universal Account Book</h2>
-            <p style="color: #7f8c8d; font-size: 0.9em;">Free, Offline, Audit-Ready Ledger. Please register to unlock the software.</p>
+            <p style="color: #7f8c8d; font-size: 0.9em;">Free, Offline, Audit-Ready Ledger. Please register to unlock.</p>
             <form id="gateForm" action="https://formspree.io/f/mpqeoanv" method="POST">
                 <div class="form-group" style="text-align: left;">
                     <label>Institution / Company Name</label>
@@ -86,7 +92,6 @@
                 </div>
                 <button type="submit" class="btn-primary" style="padding: 12px; font-size: 1.1em;">Unlock Software</button>
             </form>
-            <p style="font-size: 0.75em; color: #95a5a6; margin-top: 15px;">Your data is saved locally on your device. We respect your privacy.</p>
         </div>
     </div>
 
@@ -104,13 +109,24 @@
 
         <div class="container">
             <div class="no-print">
-                <div class="card" style="border-left: 5px solid var(--info);">
-                    <h2>Data Vault (Backup/Restore)</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-info" onclick="backupData()">📥 Download Full Backup</button>
-                        <button class="btn-warning" style="background-color: var(--warning); color: white; border: none; font-weight: bold; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%;" onclick="document.getElementById('restoreFile').click()">📤 Restore from File</button>
-                        <input type="file" id="restoreFile" style="display: none;" accept=".json" onchange="restoreData(event)">
-                    </div>
+                
+                <div class="card" style="border-left: 5px solid var(--purple);">
+                    <h2>Admin Controls</h2>
+                    
+                    <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--secondary);">1. Set Opening Balances</h4>
+                    <form id="openingForm" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="date" id="oDate" required style="flex: 1;">
+                        <select id="oAcc" required style="flex: 1.5;"></select>
+                        <input type="number" id="oAmount" step="0.01" min="0.01" placeholder="₹ Amt" required style="flex: 1;">
+                        <button type="submit" class="btn-purple" style="flex: 1;">Set Balance</button>
+                    </form>
+
+                    <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--secondary);">2. Allocate Budget to Expense Head</h4>
+                    <form id="budgetForm" style="display: flex; gap: 10px;">
+                        <select id="bAcc" required style="flex: 2;"></select>
+                        <input type="number" id="bAmount" step="0.01" min="0.01" placeholder="₹ Limit" required style="flex: 1;">
+                        <button type="submit" class="btn-purple" style="flex: 1;">Set Budget</button>
+                    </form>
                 </div>
 
                 <div class="card">
@@ -134,6 +150,15 @@
                         <div class="form-group"><label>Category</label><select id="aType" required><option value="Asset|Current Assets">Asset</option><option value="Liability|Liabilities">Liability</option><option value="Expense|Expenses">Expense</option><option value="Income|Income">Income</option></select></div>
                         <button type="submit" class="btn-secondary">Add Permanent Account</button>
                     </form>
+                </div>
+
+                <div class="card" style="border-left: 5px solid var(--info);">
+                    <h2>Data Vault (Backup/Restore)</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-info" onclick="backupData()" title="Downloads a JSON file to restore later">📥 Download JSON Backup</button>
+                        <button class="btn-warning" style="background-color: var(--warning); color: white; border: none; font-weight: bold; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%;" onclick="document.getElementById('restoreFile').click()">📤 Restore from JSON</button>
+                        <input type="file" id="restoreFile" style="display: none;" accept=".json" onchange="restoreData(event)">
+                    </div>
                 </div>
             </div>
 
@@ -159,7 +184,7 @@
                     <div class="no-print" style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn-primary" onclick="applyFilters()" style="flex: 1; padding: 10px;">Apply Filter</button>
                         <button class="btn-secondary" onclick="clearFilters()" style="flex: 1; padding: 10px;">Clear Filter</button>
-                        <button class="btn-info" onclick="exportToCSV()" style="flex: 1; padding: 10px;">📊 Export to Excel/CSV</button>
+                        <button class="btn-info" onclick="exportToCSV()" style="flex: 1; padding: 10px;" title="Downloads readable spreadsheet">📊 Export to Excel/CSV</button>
                     </div>
                     <div id="filterSummary" style="margin-top: 15px; font-size: 1.1em; font-weight: bold; color: var(--accent); display: none;" class="no-print"></div>
 
@@ -181,42 +206,32 @@
             </div>
         </div>
     </div> <script>
-        // --- 1. GATEWAY & REGISTRATION LOGIC ---
         let isRegistered = localStorage.getItem('uni_registered') === 'true';
-        
-        if (isRegistered) {
-            document.getElementById('registrationGate').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-        }
+        if (isRegistered) { document.getElementById('registrationGate').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; }
 
         document.getElementById('gateForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop standard form submission to prevent page reload
-            
-            const instName = document.getElementById('regInst').value;
-            const email = document.getElementById('regEmail').value;
-
-            // Send data to Formspree in the background
-            fetch(this.action, {
-                method: 'POST',
-                body: new FormData(this),
-                headers: { 'Accept': 'application/json' }
-            }).then(response => {
-                // Regardless of formspree success, unlock the app for the user
-                localStorage.setItem('uni_registered', 'true');
-                localStorage.setItem('uni_inst_name', instName);
-                institutionName = instName;
-                document.getElementById('displayInstName').innerText = institutionName;
-                
-                // Hide gate, show app
-                document.getElementById('registrationGate').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-            }).catch(error => {
-                alert("Network error, please try again.");
-            });
+            e.preventDefault(); const instName = document.getElementById('regInst').value;
+            fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } })
+            .then(() => {
+                localStorage.setItem('uni_registered', 'true'); localStorage.setItem('uni_inst_name', instName);
+                institutionName = instName; document.getElementById('displayInstName').innerText = institutionName;
+                document.getElementById('registrationGate').style.display = 'none'; document.getElementById('mainApp').style.display = 'block';
+            }).catch(() => alert("Network error, please try again."));
         });
 
-        // --- 2. CORE APP LOGIC ---
-        const defaultAccounts = { "Cash": { type: "Asset", category: "Current Assets" }, "Bank": { type: "Asset", category: "Current Assets" }, "Sundry Debtors (sy Dr)": { type: "Asset", category: "Current Assets" }, "Sundry Creditors (sy Cr)": { type: "Liability", category: "Liabilities" }, "Transport": { type: "Expense", category: "Expenses" }, "Administration": { type: "Expense", category: "Expenses" }, "Misc": { type: "Expense", category: "Expenses" } };
+        // Added "Opening Equity" specifically to balance starting cash/bank entries
+        const defaultAccounts = { 
+            "Cash": { type: "Asset", category: "Current Assets" }, 
+            "Bank": { type: "Asset", category: "Current Assets" }, 
+            "Sundry Debtors (sy Dr)": { type: "Asset", category: "Current Assets" }, 
+            "Sundry Creditors (sy Cr)": { type: "Liability", category: "Liabilities" }, 
+            "Opening Equity": { type: "Liability", category: "Capital & Equity" },
+            "Transport": { type: "Expense", category: "Expenses", budget: 0 }, 
+            "Administration": { type: "Expense", category: "Expenses", budget: 0 }, 
+            "School Activities": { type: "Expense", category: "Expenses", budget: 0 },
+            "Misc": { type: "Expense", category: "Expenses", budget: 0 } 
+        };
+        
         let institutionName = localStorage.getItem('uni_inst_name') || "My Institution";
         let accounts = JSON.parse(localStorage.getItem('lf_accounts')) || defaultAccounts;
         let transactions = JSON.parse(localStorage.getItem('lf_transactions')) || [];
@@ -226,15 +241,14 @@
         window.onload = () => {
             if(isRegistered) { document.getElementById('displayInstName').innerText = institutionName; }
             document.getElementById('tDate').valueAsDate = new Date();
+            document.getElementById('oDate').valueAsDate = new Date();
             refreshDropdowns(); updateApp();
         };
 
         function editInstitutionName() {
             let newName = prompt("Enter your Institution Name:", institutionName);
             if (newName && newName.trim() !== "") {
-                institutionName = newName.trim();
-                localStorage.setItem('uni_inst_name', institutionName);
-                document.getElementById('displayInstName').innerText = institutionName;
+                institutionName = newName.trim(); localStorage.setItem('uni_inst_name', institutionName); document.getElementById('displayInstName').innerText = institutionName;
             }
         }
 
@@ -269,24 +283,60 @@
             currentlyDisplayedTransactions.forEach(t => { const desc = t.desc.replace(/"/g, '""'); csvContent += `${t.date},${t.voucher || "N/A"},"${desc}",${t.drAcc},${t.crAcc},${t.amount.toFixed(2)}\n`; });
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
             const link = document.createElement("a"); const headName = currentFilter.account === "ALL" ? "All_Accounts" : currentFilter.account.replace(/\s+/g, '_');
-            link.href = url; link.download = `${institutionName.replace(/\s+/g, '_')}_Ledger_${headName}.csv`;
+            link.href = url; link.download = `${institutionName.replace(/\s+/g, '_')}_DataExport_${headName}.csv`;
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         function refreshDropdowns() {
             const drSelect = document.getElementById('tDr'); const crSelect = document.getElementById('tCr'); const filterSelect = document.getElementById('fAccount');
+            const oSelect = document.getElementById('oAcc'); const bSelect = document.getElementById('bAcc');
+            
             const currentDr = drSelect.value; const currentCr = crSelect.value; const currentFilterAcc = filterSelect.value;
             drSelect.innerHTML = '<option value="" disabled selected>-- Select Dr Account --</option>'; crSelect.innerHTML = '<option value="" disabled selected>-- Select Cr Account --</option>'; filterSelect.innerHTML = '<option value="ALL">-- All Accounts --</option>';
-            Object.keys(accounts).sort().forEach(acc => { drSelect.add(new Option(acc, acc)); crSelect.add(new Option(acc, acc)); filterSelect.add(new Option(acc, acc)); });
+            oSelect.innerHTML = '<option value="" disabled selected>-- Select Account --</option>'; bSelect.innerHTML = '<option value="" disabled selected>-- Select Expense Head --</option>';
+
+            Object.keys(accounts).sort().forEach(acc => { 
+                drSelect.add(new Option(acc, acc)); crSelect.add(new Option(acc, acc)); filterSelect.add(new Option(acc, acc));
+                if(acc !== "Opening Equity") oSelect.add(new Option(acc, acc));
+                if(accounts[acc].type === "Expense") bSelect.add(new Option(acc, acc));
+            });
+
             if (currentDr) drSelect.value = currentDr; if (currentCr) crSelect.value = currentCr; if (currentFilterAcc) filterSelect.value = currentFilterAcc;
             drSelect.addEventListener('change', function() { if (this.value === crSelect.value) crSelect.value = ""; });
             crSelect.addEventListener('change', function() { if (this.value === drSelect.value) drSelect.value = ""; });
         }
 
+        // --- NEW: ADMIN LOGIC ---
+        document.getElementById('openingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const date = document.getElementById('oDate').value;
+            const acc = document.getElementById('oAcc').value;
+            const amount = parseFloat(document.getElementById('oAmount').value);
+            const type = accounts[acc].type;
+
+            let drAcc, crAcc;
+            if(type === "Asset" || type === "Expense") { drAcc = acc; crAcc = "Opening Equity"; } 
+            else { drAcc = "Opening Equity"; crAcc = acc; }
+
+            transactions.push({ id: Date.now(), voucher: "OPENING", date: date, desc: `Recorded Opening Balance: ${acc}`, amount: amount, drAcc: drAcc, crAcc: crAcc });
+            saveData(); updateApp(); document.getElementById('oAmount').value = '';
+            alert(`Opening Balance of ₹${amount} recorded for ${acc}`);
+        });
+
+        document.getElementById('budgetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const acc = document.getElementById('bAcc').value;
+            const limit = parseFloat(document.getElementById('bAmount').value);
+            accounts[acc].budget = limit;
+            saveData(); updateApp(); document.getElementById('bAmount').value = '';
+            alert(`Budget limit of ₹${limit} successfully assigned to ${acc}.`);
+        });
+
+        // --- STANDARD FORMS ---
         document.getElementById('accountForm').addEventListener('submit', function(e) {
             e.preventDefault(); const name = document.getElementById('aName').value.trim(); const typeData = document.getElementById('aType').value.split('|');
             if (accounts[name]) { alert("Account head exists!"); return; }
-            accounts[name] = { type: typeData[0], category: typeData[1] }; saveData(); document.getElementById('aName').value = ''; refreshDropdowns(); updateApp();
+            accounts[name] = { type: typeData[0], category: typeData[1], budget: 0 }; saveData(); document.getElementById('aName').value = ''; refreshDropdowns(); updateApp();
         });
 
         document.getElementById('transactionForm').addEventListener('submit', function(e) {
@@ -319,7 +369,27 @@
             let groupedHtml = {}; Object.keys(accounts).forEach(acc => {
                 const cat = accounts[acc].category; if(!groupedHtml[cat]) groupedHtml[cat] = `<div class="acc-group"><h4>${cat}</h4>`;
                 const bal = balances[acc].toFixed(2); let color = balances[acc] < 0 ? "var(--danger)" : "inherit"; 
-                groupedHtml[cat] += `<div class="acc-item"><span>${acc}</span><span class="balance" style="color: ${color}">₹ ${bal}</span></div>`;
+                
+                let budgetHtml = "";
+                if(accounts[acc].budget && accounts[acc].budget > 0) {
+                    const budget = accounts[acc].budget;
+                    const percent = Math.min((balances[acc] / budget) * 100, 100);
+                    const barColor = percent > 90 ? "var(--danger)" : percent > 75 ? "var(--warning)" : "var(--accent)";
+                    const left = budget - balances[acc];
+                    
+                    budgetHtml = `
+                        <div class="budget-bar-container">
+                            <div class="budget-bar-fill" style="width: ${percent}%; background-color: ${barColor};"></div>
+                        </div>
+                        <div class="budget-stats"><span>Limit: ₹${budget.toFixed(2)}</span><span>Left: ₹${left.toFixed(2)}</span></div>
+                    `;
+                }
+
+                groupedHtml[cat] += `
+                    <div class="acc-item">
+                        <div class="acc-top"><span>${acc}</span><span class="balance" style="color: ${color}">₹ ${bal}</span></div>
+                        ${budgetHtml}
+                    </div>`;
             }); let finalHtml = ""; for (let cat in groupedHtml) { groupedHtml[cat] += `</div>`; finalHtml += groupedHtml[cat]; }
             document.getElementById('dashboard').innerHTML = finalHtml || "<p>No accounts setup.</p>";
         }
