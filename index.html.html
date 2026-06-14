@@ -12,8 +12,6 @@
             --purple: #8e44ad; --bg: #ecf0f1; --card-bg: #ffffff;
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--primary); margin: 0; padding: 20px; }
-        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 20px auto; }
-        h1, h2, h3, h4 { color: var(--primary); }
         .container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
         @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
         .card { background: var(--card-bg); padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -25,7 +23,6 @@
         .acc-top { display: flex; justify-content: space-between; width: 100%; }
         .acc-item span.balance { font-weight: bold; }
         
-        /* Budget Progress Bar Styles */
         .budget-bar-container { width: 100%; background-color: #e0e0e0; border-radius: 4px; height: 8px; margin-top: 5px; overflow: hidden; }
         .budget-bar-fill { height: 100%; transition: width 0.3s; }
         .budget-stats { display: flex; justify-content: space-between; font-size: 0.75em; color: #7f8c8d; margin-top: 2px; }
@@ -40,17 +37,29 @@
         .btn-secondary { background-color: var(--secondary); color: white; border: none; cursor: pointer; }
         .btn-info { background-color: var(--info); color: white; border: none; cursor: pointer; font-weight: bold; }
         .btn-purple { background-color: var(--purple); color: white; border: none; cursor: pointer; font-weight: bold; }
+        .btn-delete { background-color: var(--danger); color: white; border: none; cursor: pointer; font-weight: bold; }
         
         .action-btn { padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; color: white; font-size: 0.8em; margin-right: 5px;}
         .btn-edit { background-color: var(--warning); }
-        .btn-delete { background-color: var(--danger); }
+        .action-btn.btn-delete { background-color: var(--danger); }
         
+        /* Sequence Manager Styles */
+        .seq-list { list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; border: 1px solid #ccc; border-radius: 4px; }
+        .seq-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid #eee; background: #fafafa; font-size: 0.9em; }
+        .seq-item:last-child { border-bottom: none; }
+        .seq-controls button { width: auto; padding: 2px 6px; margin-left: 5px; font-size: 1.2em; background: none; border: 1px solid #ccc; color: var(--primary); cursor: pointer; border-radius: 3px; }
+        .seq-controls button:hover { background: #e0e0e0; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: var(--secondary); color: white; }
         tr:hover { background-color: #f9f9f9; }
-        .edit-icon { cursor: pointer; font-size: 0.7em; color: var(--info); margin-left: 10px; opacity: 0.6; transition: opacity 0.3s; }
-        .edit-icon:hover { opacity: 1; }
+
+        .edit-icon { cursor: pointer; font-size: 0.5em; color: var(--info); margin-left: 10px; opacity: 0.7; transition: opacity 0.3s; background: #e8f4f8; padding: 5px 8px; border-radius: 4px; vertical-align: middle;}
+        .edit-icon:hover { opacity: 1; background: #d0eaf3; }
+        
+        #profileSwitcher { font-size: 1em; font-weight: bold; color: var(--primary); border: 2px solid transparent; border-radius: 4px; padding: 5px; cursor: pointer; background: #f8f9fa; outline: none; }
+        #profileSwitcher:hover { border-color: #ccc; }
 
         /* Gate Styles */
         #registrationGate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(44, 62, 80, 0.95); z-index: 9999; display: flex; justify-content: center; align-items: center; }
@@ -67,7 +76,7 @@
             .dashboard-grid { grid-template-columns: 1fr 1fr 1fr; }
             table { border: 1px solid #000; }
             th, td { border: 1px solid #ccc; color: #000; }
-            .print-only-title { display: block; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 1.2em; }
+            .print-only-title { display: block; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 1.5em; border-bottom: 2px solid #000; padding-bottom: 10px; }
             .print-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 80px; padding-top: 20px; page-break-inside: avoid; }
             .sig-block { text-align: center; width: 22%; font-size: 0.9em; font-weight: bold; }
             .sig-line { border-top: 1px solid #000; margin-bottom: 5px; height: 30px; }
@@ -83,7 +92,7 @@
             <p style="color: #7f8c8d; font-size: 0.9em;">Free, Offline, Audit-Ready Ledger. Please register to unlock.</p>
             <form id="gateForm" action="https://formspree.io/f/mpqeoanv" method="POST">
                 <div class="form-group" style="text-align: left;">
-                    <label>Institution / Company Name</label>
+                    <label>Primary Account Name</label>
                     <input type="text" name="Institution" id="regInst" required placeholder="e.g. Apex Corp">
                 </div>
                 <div class="form-group" style="text-align: left;">
@@ -96,15 +105,27 @@
     </div>
 
     <div id="mainApp" style="display: none;">
-        <div class="header-container">
-            <div>
-                <h1 style="margin: 0; display: flex; align-items: center;">
-                    <span id="displayInstName">My Institution</span> 
-                    <span class="edit-icon no-print" onclick="editInstitutionName()" title="Edit Institution Name">✏️</span>
-                </h1>
-                <h3 style="margin: 5px 0 0 0; color: #7f8c8d;">Financial Ledger & BI Dashboard</h3>
+        
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-bottom: 10px;">
+                <div>
+                    <h1 class="no-print" style="margin: 0; color: var(--primary);">Universal Account Book</h1>
+                    <h3 class="no-print" style="margin: 5px 0 15px 0; color: #7f8c8d;">Financial Ledger & BI Dashboard</h3>
+                    <h1 id="printProfileName" class="print-only-title"></h1>
+                </div>
+                <button class="no-print btn-secondary" style="width: auto; padding: 10px 20px; margin-top: 5px;" onclick="window.print()">🖨️ Print Official Report</button>
             </div>
-            <button class="no-print btn-secondary" style="width: auto; padding: 10px 20px;" onclick="window.print()">🖨️ Print Official Report</button>
+            
+            <div class="no-print" style="width: 100%; background-color: #e8f4f8; padding: 15px; border-radius: 8px; border: 1px solid var(--info); display: flex; align-items: center; gap: 15px; box-sizing: border-box; margin-bottom: 20px; flex-wrap: wrap;">
+                <label style="color: var(--info); font-weight: bold; margin: 0; font-size: 1.1em;">Current Account Book:</label>
+                <select id="profileSwitcher" onchange="handleProfileSwitch()" style="flex: 1; min-width: 200px; font-size: 1.1em; font-weight: bold; border: 1px solid #bdc3c7; border-radius: 4px; padding: 8px; cursor: pointer; outline: none;"></select>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-info" onclick="createNewProfile()" style="padding: 8px 15px; width: auto;">➕ New Book</button>
+                    <button class="btn-secondary" onclick="editInstitutionName()" style="padding: 8px 15px; width: auto;">✏️ Rename</button>
+                    <button class="btn-delete" onclick="deleteCurrentProfile()" style="padding: 8px 15px; width: auto;">🗑️ Delete</button>
+                </div>
+            </div>
         </div>
 
         <div class="container">
@@ -112,20 +133,19 @@
                 
                 <div class="card" style="border-left: 5px solid var(--purple);">
                     <h2>Admin Controls</h2>
-                    
                     <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--secondary);">1. Set Opening Balances</h4>
-                    <form id="openingForm" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <input type="date" id="oDate" required style="flex: 1;">
-                        <select id="oAcc" required style="flex: 1.5;"></select>
-                        <input type="number" id="oAmount" step="0.01" min="0.01" placeholder="₹ Amt" required style="flex: 1;">
-                        <button type="submit" class="btn-purple" style="flex: 1;">Set Balance</button>
+                    <form id="openingForm" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <input type="date" id="oDate" required style="flex: 1; min-width: 120px;">
+                        <select id="oAcc" required style="flex: 1.5; min-width: 150px;"></select>
+                        <input type="number" id="oAmount" step="0.01" min="0.01" placeholder="₹ Amt" required style="flex: 1; min-width: 100px;">
+                        <button type="submit" class="btn-purple" style="flex: 1; min-width: 120px;">Set Balance</button>
                     </form>
 
-                    <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--secondary);">2. Allocate Budget to Expense Head</h4>
-                    <form id="budgetForm" style="display: flex; gap: 10px;">
-                        <select id="bAcc" required style="flex: 2;"></select>
-                        <input type="number" id="bAmount" step="0.01" min="0.01" placeholder="₹ Limit" required style="flex: 1;">
-                        <button type="submit" class="btn-purple" style="flex: 1;">Set Budget</button>
+                    <h4 style="margin-top: 0; margin-bottom: 10px; color: var(--secondary);">2. Allocate Budget to Expense</h4>
+                    <form id="budgetForm" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="bAcc" required style="flex: 2; min-width: 150px;"></select>
+                        <input type="number" id="bAmount" step="0.01" min="0.01" placeholder="₹ Limit" required style="flex: 1; min-width: 100px;">
+                        <button type="submit" class="btn-purple" style="flex: 1; min-width: 120px;">Set Budget</button>
                     </form>
                 </div>
 
@@ -144,19 +164,27 @@
                 </div>
 
                 <div class="card">
-                    <h2>Add New Account Head</h2>
-                    <form id="accountForm">
-                        <div class="form-group"><label>Account Name</label><input type="text" id="aName" required></div>
+                    <h2>Account Head Management</h2>
+                    
+                    <form id="accountForm" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #eee;">
+                        <div class="form-group"><label>Add New Account Name</label><input type="text" id="aName" required></div>
                         <div class="form-group"><label>Category</label><select id="aType" required><option value="Asset|Current Assets">Asset</option><option value="Liability|Liabilities">Liability</option><option value="Expense|Expenses">Expense</option><option value="Income|Income">Income</option></select></div>
                         <button type="submit" class="btn-secondary">Add Permanent Account</button>
                     </form>
+
+                    <div>
+                        <label style="color: var(--secondary);">Manage Presentation Sequence</label>
+                        <p style="font-size: 0.8em; color: #7f8c8d; margin-top: 0;">Use arrows to reorder how heads appear on the Balance Sheet.</p>
+                        <ul id="sequenceList" class="seq-list">
+                            </ul>
+                    </div>
                 </div>
 
                 <div class="card" style="border-left: 5px solid var(--info);">
-                    <h2>Data Vault (Backup/Restore)</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-info" onclick="backupData()" title="Downloads a JSON file to restore later">📥 Download JSON Backup</button>
-                        <button class="btn-warning" style="background-color: var(--warning); color: white; border: none; font-weight: bold; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%;" onclick="document.getElementById('restoreFile').click()">📤 Restore from JSON</button>
+                    <h2>Data Vault (Current Book)</h2>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-info" onclick="backupData()" style="flex: 1; min-width: 150px;">📥 Backup Data</button>
+                        <button class="btn-warning" style="background-color: var(--warning); color: white; border: none; font-weight: bold; padding: 10px; border-radius: 4px; cursor: pointer; flex: 1; min-width: 150px;" onclick="document.getElementById('restoreFile').click()">📤 Restore Data</button>
                         <input type="file" id="restoreFile" style="display: none;" accept=".json" onchange="restoreData(event)">
                     </div>
                 </div>
@@ -182,9 +210,9 @@
                         <div class="form-group"><label>Account Head</label><select id="fAccount"><option value="ALL">-- All Accounts --</option></select></div>
                     </div>
                     <div class="no-print" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn-primary" onclick="applyFilters()" style="flex: 1; padding: 10px;">Apply Filter</button>
-                        <button class="btn-secondary" onclick="clearFilters()" style="flex: 1; padding: 10px;">Clear Filter</button>
-                        <button class="btn-info" onclick="exportToCSV()" style="flex: 1; padding: 10px;" title="Downloads readable spreadsheet">📊 Export to Excel/CSV</button>
+                        <button class="btn-primary" onclick="applyFilters()" style="flex: 1; padding: 10px; min-width: 120px;">Apply Filter</button>
+                        <button class="btn-secondary" onclick="clearFilters()" style="flex: 1; padding: 10px; min-width: 120px;">Clear Filter</button>
+                        <button class="btn-info" onclick="exportToCSV()" style="flex: 1; padding: 10px; min-width: 180px;">📊 Export Excel/CSV</button>
                     </div>
                     <div id="filterSummary" style="margin-top: 15px; font-size: 1.1em; font-weight: bold; color: var(--accent); display: none;" class="no-print"></div>
 
@@ -205,87 +233,202 @@
                 </div>
             </div>
         </div>
-    </div> <script>
+    </div>
+
+    <script>
+        // Updated default accounts to include an initialized order index
+        const defaultAccounts = { 
+            "Cash": { type: "Asset", category: "Current Assets", order: 1 }, 
+            "Bank": { type: "Asset", category: "Current Assets", order: 2 }, 
+            "Sundry Debtors (sy Dr)": { type: "Asset", category: "Current Assets", order: 3 }, 
+            "Sundry Creditors (sy Cr)": { type: "Liability", category: "Liabilities", order: 4 }, 
+            "Opening Equity": { type: "Liability", category: "Capital & Equity", order: 5 },
+            "Transport": { type: "Expense", category: "Expenses", budget: 0, order: 6 }, 
+            "Administration": { type: "Expense", category: "Expenses", budget: 0, order: 7 }, 
+            "School Activities": { type: "Expense", category: "Expenses", budget: 0, order: 8 },
+            "Misc": { type: "Expense", category: "Expenses", budget: 0, order: 9 } 
+        };
+
+        // --- MULTI-PROFILE & INIT ---
+        let profiles = JSON.parse(localStorage.getItem('uni_profiles'));
+        let activeProfileId = localStorage.getItem('uni_active_profile_id');
+
+        if (!profiles || Object.keys(profiles).length === 0) {
+            profiles = {};
+            let oldName = localStorage.getItem('uni_inst_name') || "My Institution";
+            let oldAccs = JSON.parse(localStorage.getItem('lf_accounts')) || defaultAccounts;
+            let oldTrans = JSON.parse(localStorage.getItem('lf_transactions')) || [];
+            
+            let defaultId = 'prof_' + Date.now();
+            profiles[defaultId] = { id: defaultId, name: oldName, accounts: oldAccs, transactions: oldTrans };
+            activeProfileId = defaultId;
+            localStorage.setItem('uni_profiles', JSON.stringify(profiles));
+            localStorage.setItem('uni_active_profile_id', activeProfileId);
+        } else if (!activeProfileId || !profiles[activeProfileId]) {
+            activeProfileId = Object.keys(profiles)[0];
+            localStorage.setItem('uni_active_profile_id', activeProfileId);
+        }
+
+        let activeProfile = profiles[activeProfileId];
+        let institutionName = activeProfile.name;
+        let accounts = activeProfile.accounts;
+        let transactions = activeProfile.transactions;
+
+        // Sequence Initialization Check (For legacy profiles that lack 'order')
+        function ensureAccountOrder() {
+            let maxOrder = 0;
+            Object.keys(accounts).forEach(acc => { if(accounts[acc].order > maxOrder) maxOrder = accounts[acc].order; });
+            Object.keys(accounts).forEach(acc => {
+                if(accounts[acc].order === undefined) { maxOrder++; accounts[acc].order = maxOrder; }
+            });
+        }
+        ensureAccountOrder();
+
+        let currentFilter = { start: "", end: "", account: "ALL" };
+        let expenseChartInstance = null; let currentlyDisplayedTransactions = [];
+
+        // --- GATE ---
         let isRegistered = localStorage.getItem('uni_registered') === 'true';
         if (isRegistered) { document.getElementById('registrationGate').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; }
+
+        function unlockApp(instName) {
+            localStorage.setItem('uni_registered', 'true');
+            profiles[activeProfileId].name = instName; institutionName = instName; saveData(); loadProfilesDropdown();
+            document.getElementById('registrationGate').style.display = 'none'; document.getElementById('mainApp').style.display = 'block';
+        }
 
         document.getElementById('gateForm').addEventListener('submit', function(e) {
             e.preventDefault(); const instName = document.getElementById('regInst').value;
             fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } })
-            .then(() => {
-                localStorage.setItem('uni_registered', 'true'); localStorage.setItem('uni_inst_name', instName);
-                institutionName = instName; document.getElementById('displayInstName').innerText = institutionName;
-                document.getElementById('registrationGate').style.display = 'none'; document.getElementById('mainApp').style.display = 'block';
-            }).catch(() => alert("Network error, please try again."));
+            .then(() => unlockApp(instName)).catch(() => unlockApp(instName)); 
         });
 
-        // Added "Opening Equity" specifically to balance starting cash/bank entries
-        const defaultAccounts = { 
-            "Cash": { type: "Asset", category: "Current Assets" }, 
-            "Bank": { type: "Asset", category: "Current Assets" }, 
-            "Sundry Debtors (sy Dr)": { type: "Asset", category: "Current Assets" }, 
-            "Sundry Creditors (sy Cr)": { type: "Liability", category: "Liabilities" }, 
-            "Opening Equity": { type: "Liability", category: "Capital & Equity" },
-            "Transport": { type: "Expense", category: "Expenses", budget: 0 }, 
-            "Administration": { type: "Expense", category: "Expenses", budget: 0 }, 
-            "School Activities": { type: "Expense", category: "Expenses", budget: 0 },
-            "Misc": { type: "Expense", category: "Expenses", budget: 0 } 
-        };
-        
-        let institutionName = localStorage.getItem('uni_inst_name') || "My Institution";
-        let accounts = JSON.parse(localStorage.getItem('lf_accounts')) || defaultAccounts;
-        let transactions = JSON.parse(localStorage.getItem('lf_transactions')) || [];
-        let currentFilter = { start: "", end: "", account: "ALL" };
-        let expenseChartInstance = null; let currentlyDisplayedTransactions = [];
-
         window.onload = () => {
-            if(isRegistered) { document.getElementById('displayInstName').innerText = institutionName; }
+            if(isRegistered) { loadProfilesDropdown(); }
             document.getElementById('tDate').valueAsDate = new Date();
             document.getElementById('oDate').valueAsDate = new Date();
             refreshDropdowns(); updateApp();
         };
 
-        function editInstitutionName() {
-            let newName = prompt("Enter your Institution Name:", institutionName);
+        // --- PROFILES ---
+        function loadProfilesDropdown() {
+            const switcher = document.getElementById('profileSwitcher'); switcher.innerHTML = '';
+            Object.values(profiles).forEach(p => { switcher.add(new Option(p.name, p.id)); });
+            switcher.value = activeProfileId; document.getElementById('printProfileName').innerText = institutionName + " - Official Ledger";
+        }
+
+        function handleProfileSwitch() {
+            activeProfileId = document.getElementById('profileSwitcher').value;
+            localStorage.setItem('uni_active_profile_id', activeProfileId);
+            activeProfile = profiles[activeProfileId];
+            institutionName = activeProfile.name; accounts = activeProfile.accounts; transactions = activeProfile.transactions;
+            ensureAccountOrder();
+            document.getElementById('printProfileName').innerText = institutionName + " - Official Ledger";
+            clearFilters(); refreshDropdowns(); updateApp();
+        }
+
+        function createNewProfile() {
+            let newName = prompt("Enter name for new account book:");
             if (newName && newName.trim() !== "") {
-                institutionName = newName.trim(); localStorage.setItem('uni_inst_name', institutionName); document.getElementById('displayInstName').innerText = institutionName;
+                let newId = 'prof_' + Date.now();
+                let freshAccounts = JSON.parse(JSON.stringify(defaultAccounts)); 
+                profiles[newId] = { id: newId, name: newName.trim(), accounts: freshAccounts, transactions: [] };
+                activeProfileId = newId; localStorage.setItem('uni_profiles', JSON.stringify(profiles)); localStorage.setItem('uni_active_profile_id', activeProfileId);
+                activeProfile = profiles[activeProfileId]; institutionName = activeProfile.name; accounts = activeProfile.accounts; transactions = activeProfile.transactions;
+                loadProfilesDropdown(); clearFilters(); refreshDropdowns(); updateApp();
             }
         }
 
-        function getNextVoucherNo() { const year = new Date().getFullYear(); return `VCH-${year}-${String(transactions.length + 1).padStart(3, '0')}`; }
-        function saveData() { localStorage.setItem('lf_accounts', JSON.stringify(accounts)); localStorage.setItem('lf_transactions', JSON.stringify(transactions)); }
+        function editInstitutionName() {
+            let newName = prompt("Rename this account book:", institutionName);
+            if (newName && newName.trim() !== "") { institutionName = newName.trim(); profiles[activeProfileId].name = institutionName; saveData(); loadProfilesDropdown(); }
+        }
 
+        function deleteCurrentProfile() {
+            if (Object.keys(profiles).length <= 1) { alert("Cannot delete your only account book."); return; }
+            if (prompt(`Type DELETE to confirm deletion of "${institutionName}":`) === "DELETE") {
+                delete profiles[activeProfileId]; activeProfileId = Object.keys(profiles)[0]; 
+                localStorage.setItem('uni_profiles', JSON.stringify(profiles)); localStorage.setItem('uni_active_profile_id', activeProfileId);
+                activeProfile = profiles[activeProfileId]; institutionName = activeProfile.name; accounts = activeProfile.accounts; transactions = activeProfile.transactions;
+                loadProfilesDropdown(); clearFilters(); refreshDropdowns(); updateApp();
+            }
+        }
+
+        function saveData() { 
+            profiles[activeProfileId].accounts = accounts; profiles[activeProfileId].transactions = transactions; profiles[activeProfileId].name = institutionName;
+            localStorage.setItem('uni_profiles', JSON.stringify(profiles)); 
+        }
+
+        // --- BACKUP / EXPORT ---
         function backupData() {
             const dataToSave = { metadata: { backupDate: new Date().toISOString(), institution: institutionName }, accounts: accounts, transactions: transactions };
             const blob = new Blob([JSON.stringify(dataToSave, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url;
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
             link.download = `${institutionName.replace(/\s+/g, '_')}_Backup_${new Date().toISOString().split('T')[0]}.json`;
-            link.click(); URL.revokeObjectURL(url);
+            link.click();
         }
 
         function restoreData(event) {
             const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const parsedData = JSON.parse(e.target.result);
-                    if (parsedData.accounts && parsedData.transactions) {
-                        if(confirm("Warning: This will overwrite current data. Continue?")) {
-                            accounts = parsedData.accounts; transactions = parsedData.transactions; saveData(); refreshDropdowns(); updateApp(); alert("Data restored!");
-                        }
-                    } else { alert("Error: Invalid backup format."); }
-                } catch (err) { alert("Error reading file."); }
+                    const pData = JSON.parse(e.target.result);
+                    if (pData.accounts && pData.transactions && confirm(`Overwrite current book?`)) {
+                        accounts = pData.accounts; transactions = pData.transactions; 
+                        if(pData.metadata && pData.metadata.institution) institutionName = pData.metadata.institution;
+                        ensureAccountOrder(); saveData(); loadProfilesDropdown(); refreshDropdowns(); updateApp(); alert("Data Restored!");
+                    }
+                } catch (err) { alert("Invalid backup file."); }
             }; reader.readAsText(file); event.target.value = ''; 
         }
 
         function exportToCSV() {
             if (currentlyDisplayedTransactions.length === 0) { alert("No data to export."); return; }
-            let csvContent = "Date,Voucher No,Particulars,Debit (Dr),Credit (Cr),Amount\n";
-            currentlyDisplayedTransactions.forEach(t => { const desc = t.desc.replace(/"/g, '""'); csvContent += `${t.date},${t.voucher || "N/A"},"${desc}",${t.drAcc},${t.crAcc},${t.amount.toFixed(2)}\n`; });
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
-            const link = document.createElement("a"); const headName = currentFilter.account === "ALL" ? "All_Accounts" : currentFilter.account.replace(/\s+/g, '_');
-            link.href = url; link.download = `${institutionName.replace(/\s+/g, '_')}_DataExport_${headName}.csv`;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            let csv = "Date,Voucher No,Particulars,Debit (Dr),Credit (Cr),Amount\n";
+            currentlyDisplayedTransactions.forEach(t => { csv += `${t.date},${t.voucher || "N/A"},"${t.desc.replace(/"/g, '""')}",${t.drAcc},${t.crAcc},${t.amount.toFixed(2)}\n`; });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+            link.download = `${institutionName.replace(/\s+/g, '_')}_Export.csv`; document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
+
+        // --- SEQUENCE & SORTING LOGIC ---
+        function getSortedAccounts() {
+            return Object.keys(accounts).sort((a, b) => accounts[a].order - accounts[b].order);
+        }
+
+        function renderSequenceManager() {
+            const list = document.getElementById('sequenceList');
+            list.innerHTML = "";
+            let sorted = getSortedAccounts();
+            
+            sorted.forEach((acc, index) => {
+                let upBtn = index > 0 ? `<button type="button" onclick="moveSequence('${acc}', -1)">↑</button>` : `<button type="button" style="visibility:hidden;">↑</button>`;
+                let dnBtn = index < sorted.length - 1 ? `<button type="button" onclick="moveSequence('${acc}', 1)">↓</button>` : `<button type="button" style="visibility:hidden;">↓</button>`;
+                
+                list.innerHTML += `
+                    <li class="seq-item">
+                        <span><strong>${acc}</strong> <span style="color:#7f8c8d; font-size:0.8em;">(${accounts[acc].category})</span></span>
+                        <div class="seq-controls">${upBtn}${dnBtn}</div>
+                    </li>
+                `;
+            });
+        }
+
+        function moveSequence(accName, direction) {
+            let sorted = getSortedAccounts();
+            let idx = sorted.indexOf(accName);
+            let swapIdx = idx + direction;
+            
+            if(swapIdx >= 0 && swapIdx < sorted.length) {
+                let swapAcc = sorted[swapIdx];
+                let tempOrder = accounts[accName].order;
+                accounts[accName].order = accounts[swapAcc].order;
+                accounts[swapAcc].order = tempOrder;
+                saveData(); refreshDropdowns(); updateApp();
+            }
+        }
+
+        // --- CORE UI ---
+        function getNextVoucherNo() { const year = new Date().getFullYear(); return `VCH-${year}-${String(transactions.length + 1).padStart(3, '0')}`; }
 
         function refreshDropdowns() {
             const drSelect = document.getElementById('tDr'); const crSelect = document.getElementById('tCr'); const filterSelect = document.getElementById('fAccount');
@@ -295,7 +438,8 @@
             drSelect.innerHTML = '<option value="" disabled selected>-- Select Dr Account --</option>'; crSelect.innerHTML = '<option value="" disabled selected>-- Select Cr Account --</option>'; filterSelect.innerHTML = '<option value="ALL">-- All Accounts --</option>';
             oSelect.innerHTML = '<option value="" disabled selected>-- Select Account --</option>'; bSelect.innerHTML = '<option value="" disabled selected>-- Select Expense Head --</option>';
 
-            Object.keys(accounts).sort().forEach(acc => { 
+            // Load according to newly sorted sequence
+            getSortedAccounts().forEach(acc => { 
                 drSelect.add(new Option(acc, acc)); crSelect.add(new Option(acc, acc)); filterSelect.add(new Option(acc, acc));
                 if(acc !== "Opening Equity") oSelect.add(new Option(acc, acc));
                 if(accounts[acc].type === "Expense") bSelect.add(new Option(acc, acc));
@@ -306,37 +450,28 @@
             crSelect.addEventListener('change', function() { if (this.value === drSelect.value) drSelect.value = ""; });
         }
 
-        // --- NEW: ADMIN LOGIC ---
         document.getElementById('openingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const date = document.getElementById('oDate').value;
-            const acc = document.getElementById('oAcc').value;
-            const amount = parseFloat(document.getElementById('oAmount').value);
-            const type = accounts[acc].type;
-
-            let drAcc, crAcc;
-            if(type === "Asset" || type === "Expense") { drAcc = acc; crAcc = "Opening Equity"; } 
-            else { drAcc = "Opening Equity"; crAcc = acc; }
-
+            e.preventDefault(); const date = document.getElementById('oDate').value; const acc = document.getElementById('oAcc').value; const amount = parseFloat(document.getElementById('oAmount').value);
+            const type = accounts[acc].type; let drAcc, crAcc;
+            if(type === "Asset" || type === "Expense") { drAcc = acc; crAcc = "Opening Equity"; } else { drAcc = "Opening Equity"; crAcc = acc; }
             transactions.push({ id: Date.now(), voucher: "OPENING", date: date, desc: `Recorded Opening Balance: ${acc}`, amount: amount, drAcc: drAcc, crAcc: crAcc });
-            saveData(); updateApp(); document.getElementById('oAmount').value = '';
-            alert(`Opening Balance of ₹${amount} recorded for ${acc}`);
+            saveData(); updateApp(); document.getElementById('oAmount').value = ''; alert(`Opening Balance of ₹${amount} recorded for ${acc}`);
         });
 
         document.getElementById('budgetForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const acc = document.getElementById('bAcc').value;
-            const limit = parseFloat(document.getElementById('bAmount').value);
-            accounts[acc].budget = limit;
-            saveData(); updateApp(); document.getElementById('bAmount').value = '';
-            alert(`Budget limit of ₹${limit} successfully assigned to ${acc}.`);
+            e.preventDefault(); const acc = document.getElementById('bAcc').value; const limit = parseFloat(document.getElementById('bAmount').value);
+            accounts[acc].budget = limit; saveData(); updateApp(); document.getElementById('bAmount').value = ''; alert(`Budget assigned to ${acc}.`);
         });
 
-        // --- STANDARD FORMS ---
         document.getElementById('accountForm').addEventListener('submit', function(e) {
             e.preventDefault(); const name = document.getElementById('aName').value.trim(); const typeData = document.getElementById('aType').value.split('|');
             if (accounts[name]) { alert("Account head exists!"); return; }
-            accounts[name] = { type: typeData[0], category: typeData[1], budget: 0 }; saveData(); document.getElementById('aName').value = ''; refreshDropdowns(); updateApp();
+            
+            // Assign lowest order to new accounts (puts them at bottom)
+            let maxOrder = 0; Object.keys(accounts).forEach(acc => { if(accounts[acc].order > maxOrder) maxOrder = accounts[acc].order; });
+            
+            accounts[name] = { type: typeData[0], category: typeData[1], budget: 0, order: maxOrder + 1 }; 
+            saveData(); document.getElementById('aName').value = ''; refreshDropdowns(); updateApp();
         });
 
         document.getElementById('transactionForm').addEventListener('submit', function(e) {
@@ -354,7 +489,14 @@
         function deleteTransaction(id) { if(confirm("Are you sure you want to delete this entry?")) { transactions = transactions.filter(t => t.id !== id); saveData(); updateApp(); } }
         function applyFilters() { currentFilter.start = document.getElementById('fStart').value; currentFilter.end = document.getElementById('fEnd').value; currentFilter.account = document.getElementById('fAccount').value; renderLedger(); }
         function clearFilters() { document.getElementById('fStart').value = ""; document.getElementById('fEnd').value = ""; document.getElementById('fAccount').value = "ALL"; currentFilter = { start: "", end: "", account: "ALL" }; renderLedger(); }
-        function updateApp() { let balances = calculateBalances(); renderDashboard(balances); renderBIAndInsights(balances); renderLedger(); }
+        
+        function updateApp() { 
+            let balances = calculateBalances(); 
+            renderSequenceManager();
+            renderDashboard(balances); 
+            renderBIAndInsights(balances); 
+            renderLedger(); 
+        }
 
         function calculateBalances() {
             let balances = {}; Object.keys(accounts).forEach(acc => balances[acc] = 0);
@@ -366,31 +508,31 @@
         }
 
         function renderDashboard(balances) {
-            let groupedHtml = {}; Object.keys(accounts).forEach(acc => {
-                const cat = accounts[acc].category; if(!groupedHtml[cat]) groupedHtml[cat] = `<div class="acc-group"><h4>${cat}</h4>`;
+            let groupedHtml = {}; 
+            let sortedAccs = getSortedAccounts();
+            let categoryOrder = [];
+
+            // Group by sorted categories
+            sortedAccs.forEach(acc => {
+                const cat = accounts[acc].category; 
+                if(!categoryOrder.includes(cat)) categoryOrder.push(cat);
+                
+                if(!groupedHtml[cat]) groupedHtml[cat] = `<div class="acc-group"><h4>${cat}</h4>`;
                 const bal = balances[acc].toFixed(2); let color = balances[acc] < 0 ? "var(--danger)" : "inherit"; 
                 
                 let budgetHtml = "";
                 if(accounts[acc].budget && accounts[acc].budget > 0) {
-                    const budget = accounts[acc].budget;
-                    const percent = Math.min((balances[acc] / budget) * 100, 100);
+                    const budget = accounts[acc].budget; const percent = Math.min((balances[acc] / budget) * 100, 100);
                     const barColor = percent > 90 ? "var(--danger)" : percent > 75 ? "var(--warning)" : "var(--accent)";
                     const left = budget - balances[acc];
-                    
-                    budgetHtml = `
-                        <div class="budget-bar-container">
-                            <div class="budget-bar-fill" style="width: ${percent}%; background-color: ${barColor};"></div>
-                        </div>
-                        <div class="budget-stats"><span>Limit: ₹${budget.toFixed(2)}</span><span>Left: ₹${left.toFixed(2)}</span></div>
-                    `;
+                    budgetHtml = `<div class="budget-bar-container"><div class="budget-bar-fill" style="width: ${percent}%; background-color: ${barColor};"></div></div><div class="budget-stats"><span>Limit: ₹${budget.toFixed(2)}</span><span>Left: ₹${left.toFixed(2)}</span></div>`;
                 }
 
-                groupedHtml[cat] += `
-                    <div class="acc-item">
-                        <div class="acc-top"><span>${acc}</span><span class="balance" style="color: ${color}">₹ ${bal}</span></div>
-                        ${budgetHtml}
-                    </div>`;
-            }); let finalHtml = ""; for (let cat in groupedHtml) { groupedHtml[cat] += `</div>`; finalHtml += groupedHtml[cat]; }
+                groupedHtml[cat] += `<div class="acc-item"><div class="acc-top"><span>${acc}</span><span class="balance" style="color: ${color}">₹ ${bal}</span></div>${budgetHtml}</div>`;
+            }); 
+            
+            let finalHtml = ""; 
+            categoryOrder.forEach(cat => { groupedHtml[cat] += `</div>`; finalHtml += groupedHtml[cat]; });
             document.getElementById('dashboard').innerHTML = finalHtml || "<p>No accounts setup.</p>";
         }
 
